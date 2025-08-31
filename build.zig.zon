@@ -2,6 +2,10 @@
     .name = .ArrayUnion,
     .version = "0.1.0",
     .minimum_zig_version = "0.15.1",
-    .paths = .{"./src/"},
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
     .fingerprint = 0x875d691da0f7bcbf,
 }
