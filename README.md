@@ -48,6 +48,24 @@ Run this in your zig project:
 
 ```zig fetch --save https://github.com/austinrtn/Zig_ArrayUnion/archive/main.tar.gz```
 
+Then add this to your build.zig file
+
+```
+    const exe = b.addExecutable(.{
+        .name = "my-app",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/main.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &.{
+                .{
+                    .name = "ArrayUnion",
+                    .module = array_union_dep.module("ArrayUnion"),
+                },
+            },
+        }),
+    });
+```
 ### Manual Installation
 
 1. Download the source
