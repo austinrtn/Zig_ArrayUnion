@@ -45,6 +45,7 @@ if (config.color.getArrayValue()) |arr| for (arr, 0..) |c, i| applyColor(i, c);
 
 ### Using Zig Package Manager
 Run this in your zig project:
+
 ```zig fetch --save https://github.com/austinrtn/Zig_ArrayUnion/archive/main.tar.gz```
 
 ### Manual Installation
