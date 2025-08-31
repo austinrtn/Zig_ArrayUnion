@@ -44,24 +44,8 @@ if (config.color.getArrayValue()) |arr| for (arr, 0..) |c, i| applyColor(i, c);
 ## Installation
 
 ### Using Zig Package Manager
-
-Add to your `build.zig.zon`:
-
-```zig
-.dependencies = .{
-    .arrayunion = .{
-        .url = "https://github.com/austinrtn/zig_arrayunion/archive/refs/heads/main.tar.gz",
-        .hash = "...", // Will be auto-generated
-    },
-},
-```
-
-Add to your `build.zig`:
-
-```zig
-const arrayunion = b.dependency("arrayunion", .{});
-exe.root_module.addImport("arrayunion", arrayunion.module("arrayunion"));
-```
+Run this in your zig project:
+```zig fetch --save https://github.com/austinrtn/Zig_ArrayUnion/archive/main.tar.gz```
 
 ### Manual Installation
 
