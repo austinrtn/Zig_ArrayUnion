@@ -50,7 +50,7 @@ Add to your `build.zig.zon`:
 ```zig
 .dependencies = .{
     .arrayunion = .{
-        .url = "https://github.com/austinrtn/zig_arrayunion",
+        .url = "https://github.com/austinrtn/zig_arrayunion/archive/refs/heads/main.tar.gz",
         .hash = "...", // Will be auto-generated
     },
 },
