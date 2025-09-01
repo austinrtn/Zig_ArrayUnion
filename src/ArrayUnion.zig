@@ -34,6 +34,11 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             }
         }
         
+        pub fn typeMatches(self; *Self, value: anytype) bool {
+            if(T == valueType) return true;
+            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE) return true;
+            else return false;
+        }
         ///Setter functions that specifically set either the single or array value and will not return Error.
         pub fn setSingleValue(self: *Self, value: T) void {
             self.mode = Mode.Single;
