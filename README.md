@@ -48,7 +48,10 @@ Run this in your zig project:
 
 ```zig fetch --save https://github.com/austinrtn/Zig_ArrayUnion/archive/main.tar.gz```
 
-Then add this to your build.zig file
+Then add this line to the build file:
+```const array_union_dep = b.dependency("ArrayUnion", .{});```
+
+Finally, add the import to the .imports in your b.addExecutable:
 
 ```
     const exe = b.addExecutable(.{
