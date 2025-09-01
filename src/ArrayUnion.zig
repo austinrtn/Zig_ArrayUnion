@@ -27,7 +27,7 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             const valueTypeInfo = @typeInfo(valueType);
 
             if(T == valueType){ self.setSingleValue(value);}
-            else if (valueTypeInfo == .Array and valueTypeInfo.Array.child == T and valueTypeInfo.Array.len == ARRAY_SIZE){ self.setArrayValue(value); } 
+            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE){ self.setArrayValue(value); } 
             else {
                 std.debug.print("Invalid datatype for setValue of ArrayUnion!");
                 return ArrayUnionErrors.TypeMismatch;
