@@ -34,11 +34,7 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             }
         }
         
-        pub fn typeMatches(self; *Self, value: anytype) bool {
-            if(T == valueType) return true;
-            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE) return true;
-            else return false;
-        }
+
         ///Setter functions that specifically set either the single or array value and will not return Error.
         pub fn setSingleValue(self: *Self, value: T) void {
             self.mode = Mode.Single;
@@ -100,5 +96,21 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
         pub fn isInitialized(self: *const Self) bool{
             return (self.mode != Mode.NoValue);
         }
+
+        /// Returns true if the value passed matches either the single or the array value of the ArrayUnion
+        /// Can be used to avoid returning error when calling setValue(value).
+        pub fn typeMatches(self; *Self, value: anytype) bool {
+            if(T == valueType) return true;
+            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE) return true;
+            else return false;
+        }
+
+        pub fn getSingleType(self: *Self)) type {
+            return T;
+        }
+
+        pub fn getArrayType(self: *Self) type {
+            return [ARRAY_SIZE]T;
+        }
     };
-}
+} 
