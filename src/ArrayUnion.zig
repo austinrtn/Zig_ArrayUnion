@@ -26,15 +26,14 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             const valueType = @TypeOf(value);
             const valueTypeInfo = @typeInfo(valueType);
 
-            if(T == valueType){ self.setSingleValue(value);}
+            if(valueTypeInfo != .array and @TypeOf(@as(T, value)) == T){ self.setSingleValue(value);}
             else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE){ self.setArrayValue(value); } 
             else {
-                std.debug.print("Invalid datatype for setValue of ArrayUnion!");
+                std.debug.print("Invalid datatype for setValue of ArrayUnion!", .{});
                 return ArrayUnionErrors.TypeMismatch;
             }
         }
         
-
         ///Setter functions that specifically set either the single or array value and will not return Error.
         pub fn setSingleValue(self: *Self, value: T) void {
             self.mode = Mode.Single;
@@ -63,6 +62,13 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             return self.arrayValue;
         }
 
+        ///This fucntion will return an element of self.arrayValue if arrayValue is not null,
+        ///or will return the singleValue if arrayValue is nulll
+        pub fn resolve(self: *const Self, index: usize ) !T {
+            if(index >= ARRAY_SIZE) return ArrayUnionErrors.IndexOutOfBounds;
+            const result: T= if(self.isSingle()) (try self.expectSingle()) else (try self.expectArray())[index]; 
+            return result;
+        }
 
         ///Getter functions that expect a NonNull value. 
         ///This offers user to enforce type return by returning error instead of null
@@ -99,17 +105,20 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
 
         /// Returns true if the value passed matches either the single or the array value of the ArrayUnion
         /// Can be used to avoid returning error when calling setValue(value).
-        pub fn typeMatches(self; *Self, value: anytype) bool {
-            if(T == valueType) return true;
-            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE) return true;
-            else return false;
+        pub fn typeMatches(value: anytype) bool {
+            const valueType = @TypeOf(value);
+            const valueTypeInfo = @typeInfo(valueType);
+
+            if (T == valueType) {return true;}
+            else if (valueTypeInfo == .array and valueTypeInfo.array.child == T and valueTypeInfo.array.len == ARRAY_SIZE) { return true; }
+            else { return false; }
         }
 
-        pub fn getSingleType(self: *Self)) type {
+        pub fn getSingleType() type {
             return T;
         }
 
-        pub fn getArrayType(self: *Self) type {
+        pub fn getArrayType() type {
             return [ARRAY_SIZE]T;
         }
     };
