@@ -53,6 +53,25 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
             self.setArrayValue(valAr);
         }
 
+        ///Set element of arrayValue[index] to value.  If arrayValue is null, an error is returned.
+        pub fn updateArrayElement(self: *Self, value: T, index: usize) !void {
+            if(index >= ARRAY_SIZE) return ArrayUnionErrors.IndexOutOfBounds;
+
+            if(self.arrayValue) |*arr| {
+                arr[index] = value;
+            }
+            else {
+                return ArrayUnionErrors.ExpectingNonNullValue;
+            }
+        }
+        
+        ///Function will either set singleValue to value parameter if nonNull
+        pub fn mutate(self: *Self, value: T, index: usize ) !void {
+            if(self.isSingle()) { self.setSingleValue(value); }
+            else if(self.isArray()) { try self.updateArrayElement(value, index); }
+            else return ArrayUnionErrors.NoValueTypeSet;
+        }
+
         ///Getter functions that return the optional values.
         pub fn getSingleValue(self: *const Self) ?T {
             return self.singleValue;
@@ -66,8 +85,13 @@ const std = @import("std"); pub fn ArrayUnion(comptime T: type, comptime ARRAY_S
         ///or will return the singleValue if arrayValue is nulll
         pub fn resolve(self: *const Self, index: usize ) !T {
             if(index >= ARRAY_SIZE) return ArrayUnionErrors.IndexOutOfBounds;
-            const result: T= if(self.isSingle()) (try self.expectSingle()) else (try self.expectArray())[index]; 
-            return result;
+
+            if(self.isSingle()) { return try self.expectSingle(); }
+            else if(self.isArray()) { 
+                const arr = try self.expectArray(); 
+                return arr[index];
+            }
+            else { return ArrayUnionErrors.NoValueTypeSet; }
         }
 
         ///Getter functions that expect a NonNull value. 

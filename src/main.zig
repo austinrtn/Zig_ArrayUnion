@@ -2,7 +2,7 @@ const std = @import("std");
 pub const ArrayUnion = @import("ArrayUnion.zig").ArrayUnion;
 
 pub const Mode = enum{Single, Array, NoValue};
-pub const ArrayUnionErrors = error{TypeMismatch, ExpectingNonNullValue, IndexOutOfBounds};
+pub const ArrayUnionErrors = error{TypeMismatch, ExpectingNonNullValue, IndexOutOfBounds, NoValueTypeSet};
 pub const version = "0.1.0";
 
 pub fn createSingle(comptime T: type, comptime size: usize, value: T) ArrayUnion(T, size){
@@ -76,4 +76,17 @@ test "other" {
     try au.setValue(ar);
     const result = try au.expectArray();
     try testing.expect(std.mem.eql(i32, &result, &ar));
+}
+
+test "mutate" {
+    var au = ArrayUnion(i32, 5){};
+    au.setSingleValue(0);
+    try au.mutate(1, 2); 
+    const result1 = try au.expectSingle();
+    try testing.expect(result1 == 1);
+
+    au.fillArray(0);
+    try au.mutate(1, 2);
+    const result2 = try au.resolve(2);
+    try testing.expect(result2 == 1);
 }
